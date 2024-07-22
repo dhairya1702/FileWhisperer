@@ -1,0 +1,98 @@
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+}
+h1, h2 {
+    color: #333;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+table, th, td {
+    border: 1px solid #ccc;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+th {
+    background-color: #7f8c8d;
+    color: #fff;
+}
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #007BFF;
+    color: #fff;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0056b3;
+}
+.add-project-btn {
+    margin-top: 20px;
+    display: block;
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 70%; /* Adjust width for better readability */
+    max-height: 80%; /* Ensure the modal does not exceed 80% of the viewport height */
+    border-radius: 8px;
+    overflow: auto; /* Ensures the content is scrollable */
+}
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#summaryContent {
+    white-space: pre-wrap; /* Ensures that white space and line breaks are respected */
+    overflow-wrap: break-word; /* Ensures words break within the box */
+    word-break: break-all; /* Additional word breaking support */
+    overflow-y: auto; /* Adds vertical scrolling for the content */
+    max-height: 60vh; /* Ensure the content area does not exceed 60% of the viewport height */
+    height: 60vh; /* Set a fixed height to ensure it's always this tall */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}

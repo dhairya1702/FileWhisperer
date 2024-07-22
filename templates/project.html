@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project - {{ project_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Project: {{ project_name }}</h1>
+        <div class="document-text">
+            <h2>Document Content:</h2>
+            <pre>{{ text }}</pre>
+        </div>
+        <div class="chat-container">
+            <h2>Chat with Docs</h2>
+            <form id="chatForm">
+                <input type="hidden" id="project_name" value="{{ project_name }}">
+                <input type="text" id="question" placeholder="Type your question..." required>
+                <button type="submit">Ask</button>
+            </form>
+            <div id="response"></div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

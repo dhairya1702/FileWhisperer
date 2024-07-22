@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Docs Chat Bot</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .modal-dialog {
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Docs Chat Bot</h1>
+        <h2>Projects</h2>
+        <table id="projectsTable" class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Sno</th>
+                    <th>Project</th>
+                    <th>No Of Files</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loop to display projects -->
+                {% for project in projects %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ project.name }}</td>
+                    <td class="file-count" data-project="{{ project.name }}">{{ project.file_count }}</td>
+                    <td>
+                        <!-- Buttons for different actions -->
+                        <button class="btn btn-primary" onclick="openFilesModal('{{ project.name }}')">Add Files</button>
+                        <button class="btn btn-success" onclick="openChatModal('{{ project.name }}')">Chat With Docs</button>
+                        <button class="btn btn-info" onclick="openSummaryModal('{{ project.name }}')">Summarize Files</button>
+                        <button class="btn btn-danger" onclick="openDeleteFilesModal('{{ project.name }}')">Delete Files</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button class="btn btn-primary" onclick="openModal('projectModal')">Add Project</button>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="projectModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="projectModalLabel">Create Project</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="projectForm" onsubmit="addProject(event)">
+                        <div class="form-group">
+                            <label for="projectName">Project Name:</label>
+                            <input type="text" class="form-control" id="projectName" name="project_name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Project</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Files Modal -->
+    <div id="filesModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="filesModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filesModalLabel">Upload Files for <span id="currentProject"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="filesForm" onsubmit="uploadFiles(event)">
+                        <input type="hidden" id="filesProjectName" name="project_name">
+                        <div class="form-group">
+                            <input type="file" class="form-control-file" id="fileInput" name="file" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat With Docs Modal -->
+    <div id="chatModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="chatModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chatModalLabel">Chat with Docs for <span id="chatProject"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="chatForm" onsubmit="chatWithDocs(event)">
+                        <input type="hidden" id="chatProjectName" name="project_name">
+                        <div id="fileSelectionContainer" class="form-group">
+                            <label for="files">Select Files:</label>
+                            <select class="form-control" id="files" name="files" multiple required></select>
+                            <button type="button" class="btn btn-secondary mt-2" onclick="confirmFileSelection()">Next</button>
+                        </div>
+                        <div id="questionInputContainer" class="form-group" style="display: none;">
+                            <label for="question">Question:</label>
+                            <input type="text" class="form-control" id="question" name="question" required>
+                            <button type="submit" class="btn btn-primary mt-2">Ask</button>
+                        </div>
+                    </form>
+                    <div id="chatResponse" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Files Modal -->
+    <div id="summaryFilesModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="summaryFilesModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="summaryFilesModalLabel">Select Files to Summarize for <span id="summaryFilesProject"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="summaryFilesForm" onsubmit="summarizeSelectedFiles(event)">
+                        <input type="hidden" id="summaryFilesProjectName" name="project_name">
+                        <div id="summaryFileSelectionContainer" class="form-group">
+                            <label for="summaryFiles">Select Files:</label>
+                            <select class="form-control" id="summaryFiles" name="files" multiple required></select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Summarize</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Modal -->
+    <div id="summaryModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="summaryModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="summaryModalLabel">Summary for <span id="summaryProject"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="summaryContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Files Modal -->
+    <div id="deleteFilesModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="deleteFilesModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteFilesModalLabel">Delete Files for <span id="deleteFilesProject"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="deleteFilesForm" onsubmit="deleteSelectedFiles(event)">
+                        <input type="hidden" id="deleteFilesProjectName" name="project_name">
+                        <div id="deleteFileSelectionContainer" class="form-group">
+                            <label for="deleteFiles">Select Files:</label>
+                            <select class="form-control" id="deleteFiles" name="files" multiple required></select>
+                        </div>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Including necessary scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function openModal(modalId) {
+            $('#' + modalId).modal('show');
+        }
+
+        function closeModal(modalId) {
+            $('#' + modalId).modal('hide');
+        }
+
+        function addProject(event) {
+            event.preventDefault();
+            const projectName = document.getElementById('projectName').value;
+            const formData = new FormData();
+            formData.append('project_name', projectName);
+
+            fetch('/add_project', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "Project created successfully") {
+                    const table = document.getElementById('projectsTable').getElementsByTagName('tbody')[0];
+                    const rowCount = table.rows.length;
+                    const newRow = table.insertRow();
+                    newRow.innerHTML = `
+                        <td>${rowCount + 1}</td>
+                        <td>${projectName}</td>
+                        <td>0</td>
+                        <td>
+                            <button class="btn btn-primary" onclick="openFilesModal('${projectName}')">Add Files</button>
+                            <button class="btn btn-success" onclick="openChatModal('${projectName}')">Chat With Docs</button>
+                            <button class="btn btn-info" onclick="openSummaryModal('${projectName}')">Summarize Files</button>
+                            <button class="btn btn-danger" onclick="openDeleteFilesModal('${projectName}')">Delete Files</button>
+                        </td>
+                    `;
+                    closeModal('projectModal');
+                    document.getElementById('projectForm').reset();
+                } else {
+                    alert("Failed to create project: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Failed to create project: " + error.message);
+            });
+        }
+
+        function openFilesModal(projectName) {
+            document.getElementById('currentProject').textContent = projectName;
+            document.getElementById('filesProjectName').value = projectName;
+            openModal('filesModal');
+        }
+
+        function uploadFiles(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "File uploaded successfully") {
+                    alert("File uploaded successfully");
+
+                    // Update the file count in the table
+                    const projectName = document.getElementById('filesProjectName').value;
+                    const fileCountCell = document.querySelector(`.file-count[data-project="${projectName}"]`);
+                    if (fileCountCell) {
+                        fileCountCell.innerText = parseInt(fileCountCell.innerText) + 1;
+                    } else {
+                        console.error('File count cell not found');
+                    }
+
+                } else {
+                    alert("Failed to upload file: " + data.message);
+                }
+                closeModal('filesModal');
+                document.getElementById('filesForm').reset();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Failed to upload file: " + error.message);
+            });
+        }
+
+        function openChatModal(projectName) {
+            document.getElementById('chatProject').textContent = projectName;
+            document.getElementById('chatProjectName').value = projectName;
+
+            fetch(`/get_files?project_name=${projectName}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.files) {
+                    const filesSelect = document.getElementById('files');
+                    filesSelect.innerHTML = ''; // Clear existing options
+                    data.files.forEach(file => {
+                        const option = document.createElement('option');
+                        option.value = file;
+                        option.textContent = file;
+                        filesSelect.appendChild(option);
+                    });
+                } else {
+                    alert("Failed to fetch files: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Failed to fetch files: " + error.message);
+            });
+
+            resetChatModal();
+            openModal('chatModal');
+        }
+
+        function resetChatModal() {
+            document.getElementById('fileSelectionContainer').style.display = 'block';
+            document.getElementById('questionInputContainer').style.display = 'none';
+            document.getElementById('files').selectedIndex = -1; // Clear file selection
+            document.getElementById('question').value = ''; // Clear question input
+            document.getElementById('chatResponse').innerHTML = ''; // Clear previous response
+        }
+
+        function closeChatModal() {
+            closeModal('chatModal');
+            resetChatModal();
+        }
+
+        function confirmFileSelection() {
+            const filesSelect = document.getElementById('files');
+            if (filesSelect.selectedOptions.length > 0) {
+                document.getElementById('fileSelectionContainer').style.display = 'none';
+                document.getElementById('questionInputContainer').style.display = 'block';
+            } else {
+                alert('Please select at least one file.');
+            }
+        }
+
+        function chatWithDocs(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch('/chat', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const chatResponse = document.getElementById('chatResponse');
+                if (data.answer) {
+                    chatResponse.innerHTML = `<strong>Answer:</strong> ${data.answer}<br><pre>${JSON.stringify(data.usage, null, 2)}</pre>`;
+                } else {
+                    chatResponse.innerHTML = `<strong>Error:</strong> ${data.message}`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Failed to chat: " + error.message);
+            });
+        }
+
+        function openSummaryModal(projectName) {
+            document.getElementById('summaryFilesProject').textContent = projectName;
+            document.getElementById('summaryFilesProjectName').value = projectName;
+
+            fetch(`/get_files?project_name=${projectName}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.files) {
+                    const filesSelect = document.getElementById('summaryFiles');
+                    filesSelect.innerHTML = ''; // Clear existing options
+                    data.files.forEach(file => {
+                        const option = document.createElement('option');
+                        option.value = file;
+                        option.textContent = file;
+                        filesSelect.appendChild(option);
+                    });
+                } else {
+                    alert("Failed to fetch files: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Failed to fetch files: " + error.message);
+            });
+
+            openModal('summaryFilesModal');
+        }
+
+        function summarizeSelectedFiles(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch('/summarize', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.summary) {
+                    document.getElementById('summaryProject').textContent = formData.get('project_name');
+                    document.getElementById('summaryContent').innerHTML = `<pre>${data.summary}</pre>`;
+                    closeModal('summaryFilesModal');
+                    openModal('summaryModal');
+                } else {
+                    console.error("Error in summarization:", data); // Log full error response
+                    alert("Failed to generate summary: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error); // Log full error to console
+                alert("Failed to generate summary: " + (error.message || 'An unknown error occurred.'));
+            });
+        }
+
+        function openDeleteFilesModal(projectName) {
+            document.getElementById('deleteFilesProject').textContent = projectName;
+            document.getElementById('deleteFilesProjectName').value = projectName;
+
+            fetch(`/get_files?project_name=${projectName}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.files) {
+                    const filesSelect = document.getElementById('deleteFiles');
+                    filesSelect.innerHTML = ''; // Clear existing options
+                    data.files.forEach(file => {
+                        const option = document.createElement('option');
+                        option.value = file;
+                        option.textContent = file;
+                        filesSelect.appendChild(option);
+                    });
+                } else {
+                    alert("Failed to fetch files: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Failed to fetch files: " + error.message);
+            });
+
+            openModal('deleteFilesModal');
+        }
+
+        function deleteSelectedFiles(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch('/delete_files', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "Files deleted successfully") {
+                    alert("Files deleted successfully");
+
+                    // Update the file count in the table
+                    const projectName = document.getElementById('deleteFilesProjectName').value;
+                    const filesToDelete = document.getElementById('deleteFiles').selectedOptions.length;
+                    const fileCountCell = document.querySelector(`.file-count[data-project="${projectName}"]`);
+                    const currentFileCount = parseInt(fileCountCell.textContent);
+                    fileCountCell.textContent = currentFileCount - filesToDelete;
+
+                    closeModal('deleteFilesModal');
+                } else {
+                    alert("Failed to delete files: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Failed to delete files: " + error.message);
+            });
+        }
+    </script>
+</body>
+</html>

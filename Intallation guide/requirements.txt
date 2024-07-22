@@ -1,0 +1,11 @@
+annoy==1.17.3
+beautifulsoup4==4.12.3
+chardet==5.2.0
+Flask==3.0.3
+langchain==0.2.5
+numpy==2.0.0
+openai==1.35.3
+pdf2image==1.17.0
+PyMySQL==1.1.1
+pytesseract==0.3.10
+sentence_transformers==3.0.1
