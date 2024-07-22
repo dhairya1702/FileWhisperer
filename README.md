@@ -32,8 +32,8 @@ FileWhisperer is a web application built using Flask that allows users to upload
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/docs-chat-bot.git
-    cd docs-chat-bot
+    git clone https://github.com/dhairya1702/FileWhisperer
+    cd FileWhisperer
     ```
 
 2. Set up a virtual environment and activate it:
@@ -49,7 +49,7 @@ FileWhisperer is a web application built using Flask that allows users to upload
     pip install -r requirements.txt
     ```
 
-4. Set up the MySQL database. Create a database named `docs_chat_bot` and configure the connection in the `app.py` file.
+4. Set up the MySQL database as done in `DB-Schema.pdf` Create a database named `docs_chat_bot` and configure the connection in the `app.py` file.
 
     ```sql
     CREATE DATABASE docs_chat_bot;
@@ -67,7 +67,7 @@ FileWhisperer is a web application built using Flask that allows users to upload
     )
     ```
 
-5. Set up Azure OpenAI. Replace the endpoint and key in `app.py` with your Azure OpenAI details:
+5. Set up Azure OpenAI. You can also use OpenAI API. Replace the endpoint and key in `app.py` with your Azure OpenAI details:
 
     ```python
     azure_openai_endpoint = 'your_azure_openai_endpoint'
