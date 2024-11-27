@@ -1,118 +1,143 @@
-# FileWhisperer
+# 📝 **FileWhisperer**
 
-FileWhisperer is a web application built using Flask that allows users to upload documents, extract text from them, chat with the document content, and generate summaries. The application leverages OpenAI for text embeddings and chat functionalities, and Spotify's ANNOY for efficient similarity searches.
+FileWhisperer is a powerful web application built using Flask that allows users to **upload documents**, **extract text**, **chat with the content**, and **generate summaries**. Leveraging OpenAI for embeddings and chat functionalities, along with Spotify's ANNOY for efficient similarity searches, this tool is designed to simplify document management.
 
-## Features
+---
 
-- **Project Management**: Create and manage multiple projects.
-- **File Uploads**: Upload PDF, HTML, and CSV files to projects.
-- **Text Extraction**: Extract text from uploaded documents.
-- **Chat with Documents**: Interact with the document content by asking questions.
-- **Summarization**: Generate summaries of selected documents.
-- **File Deletion**: Remove files from projects.
+## ✨ **Features**
 
-## Technologies Used
+- 📂 **Project Management**: Create and manage multiple projects.
+- 📄 **File Uploads**: Upload files like PDFs, HTML, and CSVs.
+- 📜 **Text Extraction**: Extract text content from uploaded documents.
+- 💬 **Chat with Documents**: Interact with the document content by asking questions.
+- 📝 **Summarization**: Generate summaries of selected documents.
+- 🗑️ **File Deletion**: Easily remove files from projects.
+
+---
+
+## 🛠️ **Technologies Used**
 
 - **Backend**: Flask, PyMySQL
 - **Frontend**: HTML, CSS, Bootstrap, JavaScript
-- **Text Processing**: langchain.text_splitter, BeautifulSoup, pytesseract, pdf2image, chardet
+- **Text Processing**: `langchain.text_splitter`, BeautifulSoup, `pytesseract`, `pdf2image`, `chardet`
 - **Embedding and Similarity Search**: OpenAI, Annoy
 - **Database**: MySQL
 
-## Setup and Installation
+---
 
-### Prerequisites
+## ⚙️ **Setup and Installation**
 
-- Python 3.8 or higher
-- MySQL server
-- OpenAI account
+### **Prerequisites**
+- 🐍 Python 3.8 or higher
+- 🛢️ MySQL server
+- 🧠 OpenAI account
 
-### Installation
+### **Installation**
 
-1. Clone the repository:
-
+1. **Clone the repository**:
     ```bash
     git clone https://github.com/dhairya1702/FileWhisperer
     cd FileWhisperer
     ```
 
-2. Set up a virtual environment and activate it:
-
+2. **Set up a virtual environment and activate it**:
     ```bash
     python3 -m venv venv
     source venv/bin/activate
     ```
 
-3. Install the required packages:
-
+3. **Install the required packages**:
     ```bash
     pip install -r requirements.txt
     ```
 
-4. Set up the MySQL database as done in `DB-Schema.pdf` Create a database named `docs_chat_bot` and configure the connection in the `app.py` file.
+4. **Set up the MySQL database**:
+    - Create a database named `docs_chat_bot`:
+      ```sql
+      CREATE DATABASE docs_chat_bot;
+      ```
+    - Update the MySQL connection details in `app.py`:
+      ```python
+      connection = pymysql.connect(
+          host='localhost',
+          user='root',
+          password='your_mysql_password',
+          database='docs_chat_bot',
+          cursorclass=pymysql.cursors.DictCursor
+      )
+      ```
 
-    ```sql
-    CREATE DATABASE docs_chat_bot;
-    ```
+5. **Configure OpenAI or Azure OpenAI**:
+    - Replace the endpoint and key in `app.py` with your Azure OpenAI or OpenAI API details:
+      ```python
+      azure_openai_endpoint = 'your_azure_openai_endpoint'
+      azure_openai_key = 'your_azure_openai_key'
+      ```
 
-    Update the MySQL connection details in `app.py`:
-
-    ```python
-    connection = pymysql.connect(
-        host='localhost',
-        user='root',
-        password='your_mysql_password',
-        database='docs_chat_bot',
-        cursorclass=pymysql.cursors.DictCursor
-    )
-    ```
-
-5. Set up Azure OpenAI. You can also use OpenAI API. Replace the endpoint and key in `app.py` with your Azure OpenAI details:
-
-    ```python
-    azure_openai_endpoint = 'your_azure_openai_endpoint'
-    azure_openai_key = 'your_azure_openai_key'
-    ```
-
-6. Run the application:
-
+6. **Run the application**:
     ```bash
     flask run
     ```
 
-### File Structure
+---
 
-- `app.py`: Main application file containing the Flask routes and logic.
-- `templates/`: Contains HTML templates for rendering web pages.
-- `static/`: Contains static files like CSS and JavaScript.
-- `requirements.txt`: List of required Python packages.
+## 🗂️ **File Structure**
 
-## Usage
+```plaintext
+FileWhisperer/
+├── app.py              # Main application file
+├── templates/          # HTML templates for rendering web pages
+├── static/             # Static files (CSS, JavaScript, images)
+├── requirements.txt    # List of required Python packages
+├── README.md           # Documentation
+```
 
-1. **Home Page**: Displays a list of projects and allows creating new projects.
-2. **Upload Files**: Add files to a project by selecting a project and uploading files.
-3. **Chat with Docs**: Select files from a project and interact with their content by asking questions.
-4. **Summarize Files**: Select files from a project and generate a summary.
-5. **Delete Files**: Select files from a project to delete.
+---
 
-### Routes
+## 🚀 Usage
 
-- `/`: Home page displaying projects.
-- `/add_project`: Add a new project.
-- `/upload`: Upload a file to a project.
-- `/chat`: Chat with documents in a project.
-- `/summarize`: Summarize selected files in a project.
-- `/get_files`: Get the list of files in a project.
-- `/delete_files`: Delete selected files from a project.
+- **Home Page**: View projects and create new ones.
+- **Upload Files**: Add files to a project.
+- **Chat with Docs**: Interact with content by asking questions.
+- **Summarize Files**: Generate summaries of selected files.
+- **Delete Files**: Remove files from a project.
 
-## Contributing
+---
+
+## 🔗 Routes
+
+| **Route**       | **Description**                                       |
+|------------------|-------------------------------------------------------|
+| `/`             | Home page displaying projects                         |
+| `/add_project`  | Add a new project                                     |
+| `/upload`       | Upload a file to a project                            |
+| `/chat`         | Chat with documents in a project                      |
+| `/summarize`    | Summarize selected files in a project                 |
+| `/get_files`    | Get the list of files in a project                    |
+| `/delete_files` | Delete selected files from a project                  |
+
+---
+
+## 🤝 Contributing
 
 Contributions are welcome! Please create a pull request with a detailed description of your changes.
 
-## License
+---
 
-This project is licensed under the MIT License. 
+## 📜 License
 
-## Contact
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more details.
 
-If you have any questions, feel free to contact me at my email: dhairya.lalwani2001@gmail.com or GitHub: dhairya1702
+---
+
+## 📧 Contact
+
+If you have any questions, feel free to reach out:
+
+- 📩 Email: [dhairya.lalwani2001@gmail.com](mailto:dhairya.lalwani2001@gmail.com)
+- 🐙 GitHub: [dhairya1702](https://github.com/dhairya1702)
+
+
+
+
+
