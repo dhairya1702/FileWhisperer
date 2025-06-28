@@ -1,6 +1,6 @@
-# 📝 **FileWhisperer**
+# 📝 **KnowMyRights**
 
-FileWhisperer is a powerful web application built using Flask that allows users to **upload documents**, **extract text**, **chat with the content**, and **generate summaries**. Leveraging OpenAI for embeddings and chat functionalities, along with Spotify's ANNOY for efficient similarity searches, this tool is designed to simplify document management.
+An AI-powered legal assistant that empowers users to instantly access and understand their legal rights, statutes, and case precedents by querying constitutional and statutory documents.
 
 ---
 
